@@ -1,0 +1,149 @@
+﻿<UserControl x:Class="WpfApplication.CollectorLight.Views.OfflineMapItemsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:domainModels="clr-namespace:WpfApplication.CollectorLight.DomainModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" DataContext="{Binding OfflineMapItemsVm, Mode=OneWay, Source={StaticResource Locator}}">
+    <UserControl.Resources>
+        <domainModels:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <CollectionViewSource Source="{Binding OfflineMapListBoxItems}" x:Key="MyCollectionViewSource">
+            <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="OfflineMapItem.OfflineMapName"/>
+            </CollectionViewSource.SortDescriptions>
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="OfflineMapItem.PortalItemJson"/>
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="..\Images\Video_Intro.tif" Opacity="0.3"/>
+        </Grid.Background>
+        <ListBox x:Name="ResultsListBox" Background="Transparent" IsSynchronizedWithCurrentItem="False"
+				ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Source={StaticResource MyCollectionViewSource}}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                    </Style.Resources>
+                    <Setter Property="Focusable" Value="False"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                        <Expander IsExpanded="True" BorderBrush="#FFA4B97F" BorderThickness="2" Margin="5">
+                                            <Expander.Background>
+                                                <SolidColorBrush Color="White" Opacity="0.8" />
+                                            </Expander.Background>
+                                            <!--Im Header zeigen wir Informationen zum PortalItem. Diese stecken dank der GroupDescriptions im Name-Objekt-->
+                                            <Expander.Header>
+                                                <Grid Name="ExpanderHeaderGrid">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="10" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="20" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="*" />
+                                                        <RowDefinition Height="*" />
+                                                        <RowDefinition Height="*" />
+                                                        <RowDefinition Height="*" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Grid.Row="0" Grid.Column="0" FontWeight="Bold" Text="WebMap ID" Margin="5,0,0,0"/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Path=Name.Id}" />
+                                                    <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold" Text="Titel" Margin="5,0,0,0"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Path=Name.Title}"/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="0" FontWeight="Bold" Text="Autor" Margin="5,0,0,0"/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Path=Name.Owner}"/>
+                                                    <TextBlock Grid.Row="3" Grid.Column="0" FontWeight="Bold" Text="Zuletzt geändert" Margin="5,0,0,0"/>
+                                                    <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Path=Name.Modified}"/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="4" FontWeight="Bold" Text="Beschreibung" />
+                                                    <TextBlock Grid.Row="1" Grid.Column="4" Grid.RowSpan="3" Text="{Binding Path=Name.Description}" TextTrimming="WordEllipsis"/>
+                                                </Grid>
+                                            </Expander.Header>
+                                            <Expander.Content>
+                                                 <ItemsPresenter />
+                                            </Expander.Content>
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </ListBox.GroupStyle>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate >
+                    <Border BorderThickness="1" BorderBrush="#FFA4B97F" Margin="2" CornerRadius="3">
+                        <Border.Background>
+                            <SolidColorBrush Color="White" Opacity="0.8" />
+                        </Border.Background>
+
+                        <Grid Width="350" Height="150">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <!--Jedes Item hat als Hintergrund das Thumbnail-->
+                            <Grid.Background>
+                                <ImageBrush Stretch="UniformToFill" ImageSource="{Binding OfflineMapItem.ThumbnailPath}" AlignmentY="Top" AlignmentX="Center" />
+                            </Grid.Background>
+                            <!--Das Item zeigt links den CacheNamen, rechts die Buttons und unten einen Statusanzeige, die nur temporär sichtbar wird-->
+                            <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                <StackPanel.Background>
+                                    <SolidColorBrush Color="White" Opacity="0.6" />
+                                </StackPanel.Background>
+                                <StackPanel Orientation="Vertical">
+                                    <DockPanel Width="350">
+                                        <TextBlock Text="Cache" FontWeight="Bold" Margin="5,5,5,5"/>
+                                        <TextBlock Text="{Binding OfflineMapItem.OfflineMapName}" TextTrimming="WordEllipsis" Margin="5,5,5,5" TextWrapping="NoWrap" />
+                                        <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
+                                            <Button Command="{Binding LoadOfflineMapCommand}" CommandParameter="{Binding OfflineMapItem}" Margin="5" ToolTip="Load map">
+                                                <Image Source="../Images/map_online.png" Width="18" Height="18" Stretch="Fill" />
+                                            </Button>
+                                            <Button Command="{Binding SyncOfflineMapCommand}" CommandParameter="{Binding OfflineMapItem}" Margin="5" ToolTip="Sync map">
+                                                <Image Source="../Images/sync.png" Width="18" Height="18" Stretch="Fill" />
+                                            </Button>
+                                            <Button Command="{Binding DeleteOfflineMapCommand}" CommandParameter="{Binding OfflineMapItem}" Margin="5" ToolTip="Delete map">
+                                                <Image Source="../Images/delete.png" Width="18" Height="18" Stretch="Fill" />
+                                            </Button>
+                                        </StackPanel>
+                                    </DockPanel>
+                                    <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="5,0,5,0" Visibility="{Binding ProgressStateItem.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Label HorizontalAlignment="Left" Content="{Binding ProgressStateItem.Message}" FontSize="9" Height="20" />
+                                        <ProgressBar HorizontalAlignment="Left" Height="3" Width="330" Margin="5" Visibility="Visible" IsIndeterminate="True" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <Grid Margin="5,0,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

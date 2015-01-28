@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="com.esri.arcgis.javase.core.project.ARCGIS_RUNTIME_JAVA_SDK_DEPENDS/C|/tools/Eclipse/eclipse-jee-luna-SR1-win32-x86_64/eclipse/configuration/org.eclipse.osgi/935/0/.cp/lib/"/>
+	<classpathentry kind="var" path="ARCGIS_RUNTIME_FOR_JAVA_TOOLKIT/ArcGIS_Runtime_Java_Toolkit.jar" sourcepath="ARCGIS_RUNTIME_FOR_JAVA_TOOLKIT/ArcGIS_Runtime_Java_Toolkit-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:C:\tools\Eclipse\eclipse-jee-luna-SR1-win32-x86_64\eclipse\configuration\org.eclipse.osgi\937\0\.cp\lib\/ArcGIS_Runtime_Java_Toolkit-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/commons-lang.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

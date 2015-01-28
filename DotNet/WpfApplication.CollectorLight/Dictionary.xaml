@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:esri="http://schemas.esri.com/arcgis/runtime/2013">
+    <esri:SimpleFillSymbol x:Key="RedFillSymbol" Color="Red" Style="Null">
+        <esri:SimpleFillSymbol.Outline>
+            <esri:SimpleLineSymbol Color="Red" Style="Solid" Width="1" />
+        </esri:SimpleFillSymbol.Outline>
+    </esri:SimpleFillSymbol>
+</ResourceDictionary>

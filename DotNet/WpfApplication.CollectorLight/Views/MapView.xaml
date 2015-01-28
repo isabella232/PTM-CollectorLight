@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="WpfApplication.CollectorLight.Views.MapView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:domainModels="clr-namespace:WpfApplication.CollectorLight.DomainModels"
+             xmlns:views="clr-namespace:WpfApplication.CollectorLight.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" DataContext="{Binding MapVm, Mode=OneWay, Source={StaticResource Locator}}">
+    <UserControl.Resources>
+        <domainModels:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+        <domainModels:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <DataTemplate x:Key="LegendInfosTemplate">
+            <ToggleButton Command="{Binding CreateNewFeatureCommand}" CommandParameter="{Binding}" Width="150" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="1"  BorderBrush="Transparent" IsChecked="{Binding IsChecked, Mode=TwoWay}">
+                <StackPanel Orientation="Horizontal" >
+                    <Image Margin="0,0,5,0" Source="{Binding ImageSymbol}" />
+                    <TextBlock Text="{Binding Label}" />
+                </StackPanel>
+            </ToggleButton>
+        </DataTemplate>
+        <HierarchicalDataTemplate x:Key="FeatureLayerInfoTemplate" ItemsSource="{Binding LegendInfos}" ItemTemplate="{StaticResource LegendInfosTemplate}">
+            <StackPanel Orientation="Horizontal" >
+                <CheckBox Margin="0,0,5,0" IsChecked="{Binding Path = FeatureLayer.IsVisible, Mode=TwoWay}" />
+                <TextBlock Text="{Binding FeatureLayer.DisplayName}" />
+                <TextBlock Text=" (Edits: " />
+                <TextBlock Text="{Binding Edits}">
+                    <TextBlock.Resources>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="FontWeight" Value="Normal" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasEdits}" Value="true">
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="Foreground" Value="Red" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Resources>
+                </TextBlock>
+                <TextBlock Text=")" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+
+    </UserControl.Resources>
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="..\Images\Video_Intro.tif" Opacity="0.3"/>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TreeView Grid.Column="0" ItemsSource="{Binding FeatureLayerInfoItems}" ItemTemplate="{StaticResource FeatureLayerInfoTemplate}">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="True" />
+                    <Setter Property="Focusable" Value="False" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </TreeView>
+        <GridSplitter Grid.Column="1" Margin="2,0,2,0"
+                  Width="2" Background="Black" VerticalAlignment="Stretch" HorizontalAlignment="Center" />
+        <Grid Grid.Column="2">
+            <Border BorderBrush="Black" BorderThickness="1" Visibility="{Binding IsInProgress, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="3">
+                <Grid>
+                    <views:CircularProgressBar Width="140" Foreground="CornflowerBlue" Padding="10" Margin="12" Visibility="Visible"/>
+                    <Image Source="/WpfApplication.CollectorLight;component/Images/world.png" Width="60"/>
+                </Grid>
+            </Border>
+            <Border domainModels:BorderControlBindableChild.BindableChild="{Binding CurrentEsriMapView}" Visibility="{Binding IsInProgress, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+        </Grid>
+    </Grid>
+</UserControl>

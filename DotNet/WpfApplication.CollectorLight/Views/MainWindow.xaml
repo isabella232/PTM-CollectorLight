@@ -1,0 +1,111 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:DomainModels="clr-namespace:WpfApplication.CollectorLight.DomainModels" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:Custom="http://www.galasoft.ch/mvvmlight" x:Class="WpfApplication.CollectorLight.Views.MainWindow"
+        Title="Collector Light" Height="768" Width="1024" Icon="../Images/dotnetsdklogo.png">
+    <Window.Resources>
+        <DomainModels:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <DomainModels:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+        <DomainModels:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <Binding Mode="OneWay" Path="MainVm" Source="{StaticResource Locator}"/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+
+        </Grid.RowDefinitions>
+        <Ribbon x:Name="RibbonWin" Grid.Row="0"  SelectedIndex="{Binding RibbonTabSelectedIndex, Mode=TwoWay}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <Custom:EventToCommand Command="{Binding RibbonSelectionChangedCommand, Mode=OneWay}"/>
+                </i:EventTrigger>
+                <i:EventTrigger>
+                    <Custom:EventToCommand Command="{Binding RibbonLoadedCommand, Mode=OneWay}" PassEventArgsToCommand="True"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <!-- Help Pane, located at the right-hand side -->
+            <!--<Ribbon.HelpPaneContent>
+				<RibbonButton SmallImageSource="..\Images\help.png" />
+			</Ribbon.HelpPaneContent>-->
+            <!-- Quick Access Toolbar - located at the upper-left corner -->
+            <Ribbon.QuickAccessToolBar>
+                <RibbonQuickAccessToolBar Visibility="Visible">
+                    <RibbonButton x:Name ="Save" SmallImageSource="..\Images\save.png" />
+                    <RibbonSplitButton x:Name ="Undo" SmallImageSource="..\Images\undo.png">
+                        <RibbonSplitMenuItem Header="Undo 1" />
+                        <RibbonSplitMenuItem Header="Undo 2" />
+                        <RibbonSplitMenuItem Header="Undo 3" />
+                    </RibbonSplitButton>
+                    <RibbonSplitButton x:Name="Redo" SmallImageSource="..\Images\redo.png" >
+                        <RibbonSplitMenuItem Header="Redo 1" />
+                        <RibbonSplitMenuItem Header="Redo 2" />
+                    </RibbonSplitButton>
+                </RibbonQuickAccessToolBar>
+            </Ribbon.QuickAccessToolBar>
+            <!-- Application Menu, located at the left-hand side (down arrow) -->
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu Visibility="Collapsed"/>
+            </Ribbon.ApplicationMenu>
+            <!-- Ribbon Tab #0: Home -->
+            <RibbonTab Header="Config" Visibility="Visible">
+                <RibbonGroup  Header="ArcGIS">
+                    <RibbonButton LargeImageSource="..\Images\login.png" Label="Anmelden" Command="{Binding RibbonButtonAuthorizeLogInCommand, Mode=OneWay}" Visibility="{Binding IsUserLoggedIn, Converter={StaticResource InverseBooleanToVisibilityConverter}}" IsEnabled="{Binding IsNetworkAvailable}"/>
+                    <RibbonButton LargeImageSource="..\Images\logout.png" Label="Abmelden" Visibility="{Binding IsUserLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}" Command="{Binding RibbonButtonAuthorizeLogOutCommand, Mode=OneWay}" IsEnabled="{Binding IsNetworkAvailable}"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="MapsGroup" Header="Karte auswählen">
+                    <RibbonButton LargeImageSource="..\Images\map_online.png" Label="Online WebMaps" Command="{Binding RibbonButtonPortalItemsCommand, Mode=OneWay}" IsEnabled="{Binding IsArcGisPortalWebMapItemsSearchPossible}"/>
+                    <RibbonButton LargeImageSource="..\Images\map_offline.png" Label="Offline Maps" Command="{Binding RibbonButtonOfflineMapItemsCommand, Mode=OneWay}"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Setup">
+                    <RibbonButton LargeImageSource="..\Images\id.png" Label="Client Id" Command="{Binding RibbonButtonIdCommand, Mode=OneWay}"/>
+                </RibbonGroup>
+            </RibbonTab>
+            <!-- Ribbon Tab #1: -->
+            <RibbonTab Header="Map" HorizontalAlignment="Left">
+                <RibbonGroup Header="ArcGIS">
+                    <RibbonButton LargeImageSource="..\Images\login.png" Label="Anmelden" Command="{Binding RibbonButtonAuthorizeLogInCommand, Mode=OneWay}" Visibility="{Binding IsUserLoggedIn, Converter={StaticResource InverseBooleanToVisibilityConverter}}" IsEnabled="{Binding IsNetworkAvailable}"/>
+                    <RibbonButton LargeImageSource="..\Images\logout.png" Label="Abmelden" Visibility="{Binding IsUserLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}" Command="{Binding RibbonButtonAuthorizeLogOutCommand, Mode=OneWay}" IsEnabled="{Binding IsNetworkAvailable}"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="SearchGroup" Header="Suchen" Visibility="Collapsed">
+                    <RibbonButton LargeImageSource="..\Images\binoculars.png" Label="Orte finden" Visibility="Visible" IsEnabled="{Binding IsNetworkAvailable}"/>
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
+        <Grid Grid.Row="1" >
+            <DockPanel LastChildFill="True">
+                <Grid Margin="5,0,5,0" DockPanel.Dock="Bottom">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="left">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <Custom:EventToCommand Command="{Binding MessageViewerCommand, Mode=OneWay}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Label HorizontalContentAlignment="Left" Content="Message: " Height="30" />
+                        <Label Content="{Binding MessageInfo}" Height="30" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Label Name="UserNameInfoLabel" Content="{Binding UserNameInfo}" />
+                        <Label Content="|" Margin="10,0,10,0" />
+                        <Label Name="MapNameInfoLabel" Content="{Binding LoadedMapNameInfo}" />
+                        <Label Name="MapTypeInfoLabel" Content="{Binding LoadedMapTypeInfo}" />
+                        <Label Content="|" Margin="10,0,10,0" />
+                        <Image ToolTip="Connected" Source="..\Images\NetworkOnline.png" Width="30" Height="30" Visibility="{Binding IsNetworkAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <Image ToolTip="Not connected" Source="..\Images\NetworkOffline.png" Width="30" Height="30" Visibility="{Binding IsNetworkAvailable, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                    </StackPanel>
+                </Grid>
+                <Border DomainModels:BorderControlBindableChild.BindableChild="{Binding CurrentUserControl}" x:Name="UserControlContainer" Height="{Binding Height, ElementName=stackPanel}" />
+            </DockPanel>
+            <Border BorderThickness="1" BorderBrush="Black" Background="White" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="400" Height="200" Margin="10,0,0,40" Visibility="{Binding IsMessageViewerVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel >
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="right">
+                        <Button Width="30" Height="20" Content="clear" Command="{Binding MessageViewerClearCommand, Mode=OneWay}" />
+                    </StackPanel>
+                    <ListBox Height="179" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Messages}" BorderThickness="0" IsSynchronizedWithCurrentItem="True" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
